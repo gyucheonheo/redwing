@@ -31,3 +31,45 @@ pub fn run(config: Config) -> Result<std::process::ExitStatus, std::io::Error>{
 
     status
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn building_config_would_return_error_if_arguments_are_not_enough() {
+        let empty_args : Vec<String> = vec![];
+        let config = Config::build(&empty_args);
+
+        match config {
+            Ok(_) => assert!(false, "building Config should fail with empty args"),
+            Err(_) => assert!(true)
+        };
+
+        let one_args: Vec<String> = vec![String::from("test")];
+        let config1= Config::build(&one_args);
+
+        match config1 {
+            Ok(_) => assert!(false, "building Config should fail with length 1 args"),
+            Err(_) => assert!(true)
+        };
+
+        let two_args: Vec<String> = vec![String::from("test"), String::from("test1")];
+        let config2= Config::build(&two_args);
+
+        match config2 {
+            Ok(_) => assert!(false, "building Config should fail with length 2 args"),
+            Err(_) => assert!(true)
+        };
+    }
+
+    #[test]
+    fn building_config_would_return_config_if_arguments_are_enough() {
+        let args : Vec<String> = vec![String::from("test"), String::from("test1"), String::from("test2")];
+        let config = Config::build(&args);
+
+        match config {
+            Ok(_) => assert!(true),
+            Err(_) => assert!(false, "building Config should build successfully with len 3 args")
+        };
+    }
+}
