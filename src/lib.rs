@@ -1,4 +1,7 @@
-use std::process::Command;
+use std::process::{
+    Command, ExitStatus
+};
+
 pub struct Config {
     pub path: String,
     pub cmd: Vec<String>
@@ -17,19 +20,15 @@ impl Config {
     }
 }
 
-pub fn run(config: Config) -> Result<std::process::ExitStatus, std::io::Error>{
+pub fn status(config: Config) -> impl FnMut() -> Result<ExitStatus, std::io::Error> { 
     let program = &config.cmd[0];
     let rest = &config.cmd[1..];
     let mut binding = Command::new(program);
     
     binding.current_dir(config.path);
+    binding.args(rest);
 
-    let status = match rest {
-        [] => binding.status(),
-        otherwise => binding.args(otherwise).status(),
-    };
-
-    status
+    move|| binding.status()
 }
 
 #[cfg(test)]

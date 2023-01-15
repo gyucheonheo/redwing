@@ -10,8 +10,9 @@ fn main() {
         std::process::exit(1);
     });
 
-    redwing::run(_config).unwrap_or_else(|err| {
-        eprintln!("reding failed to run: {}", err);
+    redwing::status(_config)()
+    .unwrap_or_else(|err| {
+        eprintln!("redwing failed to run: {}", err);
         std::process::exit(1);
     });
 }
